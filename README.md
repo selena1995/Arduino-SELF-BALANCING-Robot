@@ -2,8 +2,6 @@
 A self-balancing robot is a two-wheeled robot that balances itself so that it prevents itself from falling.
 Today in this tutorial, I have made a SELF-BALANCING robot with ARDUINO. I hope this article will help the beginners to make it properly
 
-# Story
-
 # BASICS ON SELF-BALANCING ROBOT
 
 # WHAT IS A SELF-BALANCING ROBOT?
@@ -11,14 +9,16 @@ Today in this tutorial, I have made a SELF-BALANCING robot with ARDUINO. I hope 
 A self-balancing robot is a two-wheeled robot that balances itself so that it prevents itself from falling.
 
 
-HOW DOES A SELF-BALANCING ROBOT WORKS?
+# HOW DOES A SELF-BALANCING ROBOT WORKS?
+
 Self-balancing robots use a “closed-loop feedback control” system; this means that real-time data from motion sensors are used to control the motors and quickly compensate for any tilting motion in order to keep the robot upright. Similar self-balancing feedback control systems can be seen in many other applications.
 
 
-WHERE ARE SELF-BALANCING ROBOTS USED?
+# WHERE ARE SELF-BALANCING ROBOTS USED?
+
 Among wheeled robots, two self-balancing robots, the Segway and Ninebot, have become popular and are used for commuting or as patrol transporters. In addition, self-balancing wheeled robots such as Anybots QB are currently used as a service robot platform.
 
-WHICH COMPONENTS WILL BE NEEDED AND WHY?
+# WHICH COMPONENTS WILL BE NEEDED AND WHY?
 Here in this part, we will discuss the components, why we did choose them, and side by side we will make the robot too.
 
 for a better explanation, I have divided this into three different parts-
@@ -29,7 +29,7 @@ Arduino Coding & Calibration:- Here in this last part, we will discuss the Ardui
 After completing these three steps, Our robot will be ready to show.
 
 
-MECHANICAL PART
+# MECHANICAL PART
 We will start making our mechanical part first. For this, l have used some PVC sheets and 4 no of Graphite Pencil to make the robot Body. Please make the robot multi-storied because we are going to use mpu6050 which works best if it is placed at some height upper than the base. We will discuss more on mpu6050 in the later part of the electronics part of this article. For now, we will go for the mechanical part only.
 After that, we will need two no of gear motors, two motor brackets, and two wheels.
 
