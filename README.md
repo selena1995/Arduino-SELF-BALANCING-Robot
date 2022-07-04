@@ -99,7 +99,9 @@ by installing all the components perfectly in the robot body, we have done makin
 
 There have to follow a few steps to calibrate & uploading the code...
 for better understanding, l have divided this Arduino coding and calibration part into some different parts.
+
 ![FNP4PQ8J20PCI6N](https://user-images.githubusercontent.com/79990158/177115914-51950ca0-2fd7-49f3-9dc1-698f484bce81.png)
+
 The MPU6050 has a 3-axis accelerometer and a 3-axis gyroscope. The accelerometer measures acceleration along the three axes and the gyroscope measures angular rate about the three axes. To measure the angle of inclination of the robot we need acceleration values along the y and z-axes. The atan2(y, z) function gives the angle in radians between the positive z-axis of a plane and the point given by the coordinates (z, y) on that plane, with the positive sign for counter-clockwise angles (right half-plane, y > 0), and negative sign for clockwise angles (left half-plane, y < 0). We use this library written by Jeff Rowberg to read the data from MPU6050. Upload the code given below and see how the angle of inclination varies.
 
 
@@ -146,4 +148,247 @@ void loop() {
     Serial.println(accAngle);
 }
 
+Try moving the robot forward and backward while keeping it tilted at some fixed angle. You will observe that the angle is shown in your serial monitor suddenly changes. This is due to the horizontal component of acceleration interfering with the acceleration values of y and z-axes.
 
+
+# Measuring Angle of Inclination Using Gyroscope
+The 3-axis gyroscope of MPU6050 measures angular rate (rotational velocity) along the three axes. For our self-balancing robot, the angular velocity along the x-axis alone is sufficient to measure the rate of fall of the robot.
+
+In the code given below, we read the gyro value about the x-axis, convert it to degrees per second and then multiply it with the loop time to obtain the change in angle. We add this to the previous angle to obtain the current angle.
+
+#include "Wire.h"
+#include "I2Cdev.h"
+#include "MPU6050.h"
+MPU6050 mpu;
+int16_t gyroX, gyroRate;
+float gyroAngle=0;
+unsigned long currTime, prevTime=0, loopTime;
+void setup() {  
+  mpu.initialize();
+  Serial.begin(9600);
+}
+void loop() {
+  currTime = millis();
+  loopTime = currTime - prevTime;
+  prevTime = currTime;
+  
+  gyroX = mpu.getRotationX();
+  gyroRate = map(gyroX, -32768, 32767, -250, 250);
+  gyroAngle = gyroAngle + (float)gyroRate*loopTime/1000;
+  
+  Serial.println(gyroAngle);
+}
+#include "Wire.h"
+#include "I2Cdev.h"
+#include "MPU6050.h"
+MPU6050 mpu;
+int16_t gyroX, gyroRate;
+float gyroAngle=0;
+unsigned long currTime, prevTime=0, loopTime;
+void setup() {  
+  mpu.initialize();
+  Serial.begin(9600);
+}
+void loop() {
+  currTime = millis();
+  loopTime = currTime - prevTime;
+  prevTime = currTime;
+  
+  gyroX = mpu.getRotationX();
+  gyroRate = map(gyroX, -32768, 32767, -250, 250);
+  gyroAngle = gyroAngle + (float)gyroRate*loopTime/1000;
+  
+  Serial.println(gyroAngle);
+}
+The position of the MPU6050 when the program starts running is the zero inclination point. The angle of inclination will be measured with respect to this point.
+
+Keep the robot steady at a fixed angle and you will observe that the angle will gradually increase or decrease. It won't stay steady. This is due to the drift which is inherent to the gyroscope.
+
+In the code given above, loop time is calculated using the millis() function which is built into the Arduino IDE. In later steps, we will be using timer interrupts to create precise sampling intervals. This sampling period will also be used in generating the output using a PID controller.
+
+# PID Control for Generating Output
+PID stands for Proportional, Integral, and Derivative. Each of these terms provides a unique response to our self-balancing robot.
+
+The proportional term, as its name suggests, generates a response that is proportional to the error. For our system, the error is the angle of inclination of the robot.
+
+The integral term generates a response based on the accumulated error. This is essentially the sum of all the errors multiplied by the sampling period. This is a response based on the behavior of the system in past.
+
+The derivative term is proportional to the derivative of the error. This is the difference between the current error and the previous error divided by the sampling period. This acts as a predictive term that responds to how the robot might behave in the next sampling loop.
+
+Multiplying each of these terms by their corresponding constants (i.e, Kp, Ki, and Kd) and summing the result, we generate the output which is then sent as a command to drive the motor.
+
+# Tuning the PID Constants
+1. Set Ki and Kd to zero and gradually increase Kp so that the robot starts to oscillate about the zero position.
+
+2. Increase Ki so that the response of the robot is faster when it is out of balance. Ki should be large enough so that the angle of inclination does not increase. The robot should come back to zero position if it is inclined.
+
+3. Increase Kd so as to reduce the oscillations. The overshoots should also be reduced by now.
+
+4. Repeat the above steps by fine-tuning each parameter to achieve the best result.
+
+
+# The Complete Code
+//Self Balancing Robot
+#include<Arduino.h>
+#include <PID_v1.h>
+#include <LMotorController.h>
+#include "I2Cdev.h"
+#include "MPU6050_6Axis_MotionApps20.h"
+
+#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+#include "Wire.h"
+#endif
+
+#define MIN_ABS_SPEED 30
+
+MPU6050 mpu;
+
+// MPU control/status vars
+bool dmpReady = false; // set true if DMP init was successful
+uint8_t mpuIntStatus; // holds actual interrupt status byte from MPU
+uint8_t devStatus; // return status after each device operation (0 = success, !0 = error)
+uint16_t packetSize; // expected DMP packet size (default is 42 bytes)
+uint16_t fifoCount; // count of all bytes currently in FIFO
+uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+// orientation/motion vars
+Quaternion q; // [w, x, y, z] quaternion container
+VectorFloat gravity; // [x, y, z] gravity vector
+float ypr[3]; // [yaw, pitch, roll] yaw/pitch/roll container and gravity vector
+
+//PID
+double originalSetpoint = 172.50;
+double setpoint = originalSetpoint;
+double movingAngleOffset = 0.1;
+double input, output;
+
+//adjust these values to fit your own design
+double Kp = 60;
+double Kd = 2.2;
+double Ki = 270;
+PID pid(&input, &output, &setpoint, Kp, Ki, Kd, DIRECT);
+
+double motorSpeedFactorLeft = 0.6;
+double motorSpeedFactorRight = 0.5;
+
+//MOTOR CONTROLLER
+int ENA = 5;
+int IN1 = 6;
+int IN2 = 7;
+int IN3 = 9;
+int IN4 = 8;
+int ENB = 10;
+LMotorController motorController(ENA, IN1, IN2, ENB, IN3, IN4, motorSpeedFactorLeft, motorSpeedFactorRight);
+
+volatile bool mpuInterrupt = false; // indicates whether MPU interrupt pin has gone high
+void dmpDataReady()
+{
+  mpuInterrupt = true;
+}
+
+
+void setup()
+{
+  // join I2C bus (I2Cdev library doesn't do this automatically)
+#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+  Wire.begin();
+  TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz)
+#elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
+  Fastwire::setup(400, true);
+#endif
+
+  mpu.initialize();
+
+  devStatus = mpu.dmpInitialize();
+
+  // supply your own gyro offsets here, scaled for min sensitivity
+  mpu.setXGyroOffset(220);
+  mpu.setYGyroOffset(76);
+  mpu.setZGyroOffset(-85);
+  mpu.setZAccelOffset(1788); // 1688 factory default for my test chip
+
+  // make sure it worked (returns 0 if so)
+  if (devStatus == 0)
+  {
+    // turn on the DMP, now that it's ready
+    mpu.setDMPEnabled(true);
+
+    // enable Arduino interrupt detection
+    attachInterrupt(0, dmpDataReady, RISING);
+    mpuIntStatus = mpu.getIntStatus();
+
+    // set our DMP Ready flag so the main loop() function knows it's okay to use it
+    dmpReady = true;
+
+    // get expected DMP packet size for later comparison
+    packetSize = mpu.dmpGetFIFOPacketSize();
+
+    //setup PID
+    pid.SetMode(AUTOMATIC);
+    pid.SetSampleTime(10);
+    pid.SetOutputLimits(-255, 255);
+  }
+  else
+  {
+    // ERROR!
+    // 1 = initial memory load failed
+    // 2 = DMP configuration updates failed
+    // (if it's going to break, usually the code will be 1)
+    Serial.print(F("DMP Initialization failed (code "));
+    Serial.print(devStatus);
+    Serial.println(F(")"));
+  }
+}
+
+
+void loop()
+{
+  // if programming failed, don't try to do anything
+  if (!dmpReady) return;
+
+  // wait for MPU interrupt or extra packet(s) available
+  while (!mpuInterrupt && fifoCount < packetSize)
+  {
+    //no mpu data - performing PID calculations and output to motors
+    pid.Compute();
+    motorController.move(output, MIN_ABS_SPEED);
+
+  }
+
+  // reset interrupt flag and get INT_STATUS byte
+  mpuInterrupt = false;
+  mpuIntStatus = mpu.getIntStatus();
+
+  // get current FIFO count
+  fifoCount = mpu.getFIFOCount();
+
+  // check for overflow (this should never happen unless our code is too inefficient)
+  if ((mpuIntStatus & 0x10) || fifoCount == 1024)
+  {
+    // reset so we can continue cleanly
+    mpu.resetFIFO();
+    Serial.println(F("FIFO overflow!"));
+
+    // otherwise, check for DMP data ready interrupt (this should happen frequently)
+  }
+  else if (mpuIntStatus & 0x02)
+  {
+    // wait for correct available data length, should be a VERY short wait
+    while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
+
+    // read a packet from FIFO
+    mpu.getFIFOBytes(fifoBuffer, packetSize);
+
+    // track FIFO count here in case there is > 1 packet available
+    // (this lets us immediately read more without waiting for an interrupt)
+    fifoCount -= packetSize;
+
+    mpu.dmpGetQuaternion(&q, fifoBuffer);
+    mpu.dmpGetGravity(&gravity, &q);
+    mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+    input = ypr[1] * 180 / M_PI + 180;
+  }
+}
+here we have done making the project of Arduino Self-Balancing Robot successfully... Now it's show time. Please Click Below To watch the full procedure and the outcome...
+
+https://www.youtube.com/watch?v=eexi7tucOEs
