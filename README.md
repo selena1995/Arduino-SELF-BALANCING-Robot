@@ -75,3 +75,14 @@ As I have already mentioned before I have already attached a circuit diagram wit
 ![Screenshot (432)](https://user-images.githubusercontent.com/79990158/177105145-9355b4c9-2dfc-4825-ab93-5f0e8609d12b.png)
 ![Screenshot (431)](https://user-images.githubusercontent.com/79990158/177105158-b73796c8-48bb-4b26-b1fb-328485ed1583.png)
 
+I have placed Arduino nano and MPU6050 on the same circuit board and also I have made a separate point for HC-05 Bluetooth Module so that I could easily upgrade my Self-Balancing Robot into a Bluetooth Controlled Self-Balanced Robot in my next project with the same PCB Board. I have just excluded the l298n motor driver module from my Customized PCB board. That portion will need to be wiring only.
+
+![Screenshot (441)](https://user-images.githubusercontent.com/79990158/177113906-66ace8ab-ee86-496a-9253-82817cb76797.png)
+![Screenshot (440)](https://user-images.githubusercontent.com/79990158/177113953-a897872a-76ac-4f2c-8cae-b82501d59cf0.png)
+![Screenshot (438)](https://user-images.githubusercontent.com/79990158/177113984-db53b383-364f-429e-aa4c-0411d4849ae8.png)
+![Screenshot (436)](https://user-images.githubusercontent.com/79990158/177114031-73ae67c9-f2a2-4286-a261-22c5218484b2.png)
+![Screenshot (435)](https://user-images.githubusercontent.com/79990158/177114092-5a1a6603-a5b8-4f22-9928-9479d073b259.png)
+![Screenshot (434)](https://user-images.githubusercontent.com/79990158/177114127-9e9393b9-d799-48c7-b80d-f13adb06c7ac.png)
+
+here you can see that I have already done wiring the components together. The next step is very simple which is to collage the mechanical part and electronic part together and also have to connect a battery holder switch and 18650 li-ion battery with the robot body and the circuit. let's do that...
+
