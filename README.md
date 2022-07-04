@@ -45,3 +45,33 @@ After that, we will need two no of gear motors, two motor brackets, and two whee
 ![Screenshot (421)](https://user-images.githubusercontent.com/79990158/177102713-be49dd39-89f5-47aa-8fa3-b423778c90d5.png)
 ![Screenshot (420)](https://user-images.githubusercontent.com/79990158/177102750-acfb4f5b-440d-44a5-8510-3f93fa2cbbda.png)
 I have used hot glue to attach all the parts together. It will take not more than 20-25min to give it a perfect look like this. Our mechanical part is ready and now we will go for the electronics part.
+
+# ELECTRONICS PART
+In this part, we will discuss the electronic components that we have used to make this robot. We will also learn why have we chosen all these components. Here we will also connect all the components together according to the circuit diagram that l have already attached with this article. Please download it before you are going to connect all the components together.
+
+# ARDUINO NANO
+Arduino NANO is the brain of the robot. Here l choose it because It's a perfect micro controller to learn hobby electronics and programming on, and its size makes it excellent for building into projects which require a small form factor.
+![Screenshot (424)](https://user-images.githubusercontent.com/79990158/177104455-2ed18a86-782f-4de2-8f83-8eccd7ee5aa1.png)
+
+# L298n Motor Driver
+The L298N Motor Driver is a controller that uses an H-Bridge to easily control the direction and speed of up to 2 DC motors. The L298N is a dual H-Bridge motor driver which allows speed and direction control of two DC motors at the same time. The module can drive DC motors that have voltages between 5 and 35V, with a peak current up to 2A.
+![Screenshot (425)](https://user-images.githubusercontent.com/79990158/177104642-9f81c4ff-835f-44ee-bd12-807132a3f13c.png)
+
+# MPU6050
+MPU6050 is a Micro Electro-mechanical system (MEMS), it consists of a three-axis accelerometer and a three-axis gyroscope. which means that it gives six values as output:
+
+three values from the accelerometer
+three from the gyroscope
+It helps us to measure velocity, orientation, acceleration, displacement, and other motion-like features. It is very accurate, as it contains a 16-bits analog to digital conversion hardware for each channel. Therefore it captures the x, y, and z channels at the same time. The sensor uses the I2C-bus to interface with the Arduino. The MPU6050 can measure angular rotation using its on-chip gyroscope with four programmable full-scale ranges of ±250°/s, ±500°/s, ±1000°/s, and ±2000°/s.
+![Screenshot (426)](https://user-images.githubusercontent.com/79990158/177104759-1fd7dfc1-af26-415a-98c0-d30fa543ac61.png)
+These were the basic details of the components that I have used in this robot. There have many more components like Rocker switches, Jumper Wires, etc many more things which have no need for explanation l belief. Now l am going for the next step
+
+# ASSEMBLE COMPONENTS TOGETHER
+As I have already mentioned before I have already attached a circuit diagram with this article so please download that before you are going to connect all of them together. In my case, I have made a customized PCB board from JLCPCB to skip a few steps of wiring and make an easy connection between all the components.$2 for 5pcs PCBs, PCBA from $0, Register to Get Free Coupons here: https://jlcpcb.com/IYB. I really liked the PCB Boards as they are very high in quality.
+
+![Screenshot (430)](https://user-images.githubusercontent.com/79990158/177105080-4c61d9e5-47ea-4595-a307-b72f0977727e.png)
+![Screenshot (429)](https://user-images.githubusercontent.com/79990158/177105097-94ba7cd5-bbe7-4b80-8a3d-91d6b09151c1.png)
+![Screenshot (433)](https://user-images.githubusercontent.com/79990158/177105110-2267228b-f55f-40e4-9ca1-870f1d8ec602.png)
+![Screenshot (432)](https://user-images.githubusercontent.com/79990158/177105145-9355b4c9-2dfc-4825-ab93-5f0e8609d12b.png)
+![Screenshot (431)](https://user-images.githubusercontent.com/79990158/177105158-b73796c8-48bb-4b26-b1fb-328485ed1583.png)
+
