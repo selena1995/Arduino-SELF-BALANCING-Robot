@@ -104,6 +104,7 @@ for better understanding, l have divided this Arduino coding and calibration par
 
 The MPU6050 has a 3-axis accelerometer and a 3-axis gyroscope. The accelerometer measures acceleration along the three axes and the gyroscope measures angular rate about the three axes. To measure the angle of inclination of the robot we need acceleration values along the y and z-axes. The atan2(y, z) function gives the angle in radians between the positive z-axis of a plane and the point given by the coordinates (z, y) on that plane, with the positive sign for counter-clockwise angles (right half-plane, y > 0), and negative sign for clockwise angles (left half-plane, y < 0). We use this library written by Jeff Rowberg to read the data from MPU6050. Upload the code given below and see how the angle of inclination varies.
 
+//
 
 #include "Wire.h"
 #include "I2Cdev.h"
@@ -148,6 +149,7 @@ void loop() {
     Serial.println(accAngle);
 }
 
+//
 Try moving the robot forward and backward while keeping it tilted at some fixed angle. You will observe that the angle is shown in your serial monitor suddenly changes. This is due to the horizontal component of acceleration interfering with the acceleration values of y and z-axes.
 
 
