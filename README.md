@@ -85,4 +85,65 @@ I have placed Arduino nano and MPU6050 on the same circuit board and also I have
 ![Screenshot (434)](https://user-images.githubusercontent.com/79990158/177114127-9e9393b9-d799-48c7-b80d-f13adb06c7ac.png)
 
 here you can see that I have already done wiring the components together. The next step is very simple which is to collage the mechanical part and electronic part together and also have to connect a battery holder switch and 18650 li-ion battery with the robot body and the circuit. let's do that...
+![Screenshot (450)](https://user-images.githubusercontent.com/79990158/177115228-d4378ed4-0a9a-424d-ae45-49c5dfeeea2d.png)
+![Screenshot (449)](https://user-images.githubusercontent.com/79990158/177115262-c67911ee-1665-4ceb-a1a1-6907971c30bb.png)
+![Screenshot (448)](https://user-images.githubusercontent.com/79990158/177115286-8d27f71f-0ec0-453f-883f-4144b57fe91e.png)
+![Screenshot (447)](https://user-images.githubusercontent.com/79990158/177115318-da982838-b257-4454-875b-9f712bc17e4a.png)
+![Screenshot (446)](https://user-images.githubusercontent.com/79990158/177115344-3c20f5ec-de7c-4995-b2a0-9b8a97b39b05.png)
+![Screenshot (445)](https://user-images.githubusercontent.com/79990158/177115384-2eb4ba0d-f816-466d-b369-0e5171ce2906.png)
+![Screenshot (443)](https://user-images.githubusercontent.com/79990158/177115400-bf42a382-08d8-4f7d-98a3-ebdc7391308b.png)
+
+by installing all the components perfectly in the robot body, we have done making our robot. now only the last and final step has left to do which is Uploading Arduino code to the Arduino Nano.
+
+# ARDUINO CODING AND CALIBRATION
+
+There have to follow a few steps to calibrate & uploading the code...
+for better understanding, l have divided this Arduino coding and calibration part into some different parts.
+![FNP4PQ8J20PCI6N](https://user-images.githubusercontent.com/79990158/177115914-51950ca0-2fd7-49f3-9dc1-698f484bce81.png)
+The MPU6050 has a 3-axis accelerometer and a 3-axis gyroscope. The accelerometer measures acceleration along the three axes and the gyroscope measures angular rate about the three axes. To measure the angle of inclination of the robot we need acceleration values along the y and z-axes. The atan2(y, z) function gives the angle in radians between the positive z-axis of a plane and the point given by the coordinates (z, y) on that plane, with the positive sign for counter-clockwise angles (right half-plane, y > 0), and negative sign for clockwise angles (left half-plane, y < 0). We use this library written by Jeff Rowberg to read the data from MPU6050. Upload the code given below and see how the angle of inclination varies.
+
+
+#include "Wire.h"
+#include "I2Cdev.h"
+#include "MPU6050.h"
+#include "math.h"
+MPU6050 mpu;
+int16_t accY, accZ;
+float accAngle;
+void setup() {  
+  mpu.initialize();
+  Serial.begin(9600);
+}
+void loop() {  
+  accZ = mpu.getAccelerationZ();
+  accY = mpu.getAccelerationY();
+   
+  accAngle = atan2(accY, accZ)*RAD_TO_DEG;
+  
+  if(isnan(accAngle));
+  else
+    Serial.println(accAngle);
+}
+#include "Wire.h"
+#include "I2Cdev.h"
+#include "MPU6050.h"
+#include "math.h"
+MPU6050 mpu;
+int16_t accY, accZ;
+float accAngle;
+void setup() {  
+  mpu.initialize();
+  Serial.begin(9600);
+}
+void loop() {  
+  accZ = mpu.getAccelerationZ();
+  accY = mpu.getAccelerationY();
+   
+  accAngle = atan2(accY, accZ)*RAD_TO_DEG;
+  
+  if(isnan(accAngle));
+  else
+    Serial.println(accAngle);
+}
+
 
