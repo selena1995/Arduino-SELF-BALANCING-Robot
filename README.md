@@ -2,9 +2,12 @@
 A self-balancing robot is a two-wheeled robot that balances itself so that it prevents itself from falling.
 Today in this tutorial, I have made a SELF-BALANCING robot with ARDUINO. I hope this article will help the beginners to make it properly
 
-Story
-BASICS ON SELF-BALANCING ROBOT
-WHAT IS A SELF-BALANCING ROBOT?
+# Story
+
+# BASICS ON SELF-BALANCING ROBOT
+
+# WHAT IS A SELF-BALANCING ROBOT?
+
 A self-balancing robot is a two-wheeled robot that balances itself so that it prevents itself from falling.
 
 
